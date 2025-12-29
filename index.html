@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vissen</title>
+
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+body {
+  margin:0;
+  font-family:-apple-system;
+  background:#0e2a3a;
+  color:white;
+}
+header {
+  padding:1rem;
+  text-align:center;
+  font-size:1.2rem;
+}
+#map { height:300px; }
+select, button {
+  width:100%;
+  padding:1rem;
+  margin:0.5rem 0;
+  font-size:1rem;
+}
+#result { padding:1rem; }
+</style>
+</head>
+
+<body>
+
+<header>🎣 Beste stek nu</header>
+
+<div id="map"></div>
+
+<select id="vissoort">
+  <option value="">Kies vissoort</option>
+  <option value="snoek">Snoek</option>
+  <option value="baars">Baars</option>
+</select>
+
+<button onclick="toonStek()">Toon beste stek</button>
+
+<div id="result"></div>
+
+<script>
+const map = L.map('map').setView([52.011, 6.135], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap'
+}).addTo(map);
+
+let markers = [];
+
+async function toonStek() {
+  const soort = document.getElementById("vissoort").value;
+  if (!soort) return;
+
+  const data = await fetch("data.json").then(r => r.json());
+  const stekken = data[soort];
+
+  const beste = stekken.sort((a,b) => b.score - a.score)[0];
+
+  document.getElementById("result").innerHTML = `
+    🟢 Beste stek voor <b>${soort}</b><br>
+    📍 ${beste.naam}<br>
+    ⭐ Score: ${beste.score}/100<br>
+    ℹ️ ${beste.reden}
+  `;
+
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  stekken.forEach(stek => {
+    const marker = L.marker([stek.lat, stek.lng])
+      .addTo(map)
+      .bindPopup(`${stek.naam}<br>Score: ${stek.score}`);
+    markers.push(marker);
+  });
+
+  map.setView([beste.lat, beste.lng], 14);
+}
+</script>
+
+</body>
+</html>
