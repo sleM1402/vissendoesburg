@@ -1,0 +1,27 @@
+{
+  "snoek": [
+    {
+      "naam": "IJssel – kribvak noord",
+      "lat": 52.013,
+      "lng": 6.133,
+      "score": 87,
+      "reden": "Stroming + bewolkt"
+    },
+    {
+      "naam": "Nevengeul",
+      "lat": 52.009,
+      "lng": 6.140,
+      "score": 72,
+      "reden": "Rustig water"
+    }
+  ],
+  "baars": [
+    {
+      "naam": "Havenkom",
+      "lat": 52.012,
+      "lng": 6.138,
+      "score": 81,
+      "reden": "Warm en beschut"
+    }
+  ]
+}
